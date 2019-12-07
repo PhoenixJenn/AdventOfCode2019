@@ -1,0 +1,77 @@
+import math
+
+# Fuel required to launch a given module is based on its mass. Specifically, to find the fuel required for a module, take its mass, divide by three, round down, and subtract 2.
+# For a mass of 12, divide by 3 and round down to get 4, then subtract 2 to get 2
+# or a mass of 100756, the fuel required is 33583
+# The Fuel Counter-Upper needs to know the total fuel requirement. To find it, individually calculate the fuel needed for the mass of each module (your puzzle input), then add together all the fuel values.
+
+
+#### FUNCTIONS #####
+#What is the sum of the fuel requirements for all of the modules on your spacecraft?
+def round_down(n, decimals=0):
+    multiplier = 10 ** decimals
+    return math.floor(n * multiplier) / multiplier
+
+# take its mass, divide by three, round down, and subtract 2
+def findFuel(mass):
+    # need to add recursion here for added fuel for fuel instead of below
+    return (round_down(mass/3))-2
+
+# recursive fuel to carry fuel
+def getFuelToCarryFuelRec(current_fuel_mass, total_extrafuel):
+    if findFuel(current_fuel_mass) <= 0:
+        return total_extrafuel
+    else:
+        current_fuel_mass = findFuel(current_fuel_mass)
+        total_extrafuel += current_fuel_mass
+        return getFuelToCarryFuelRec(current_fuel_mass,total_extrafuel)
+
+
+######### VARIABLES #########
+fuel_to_carry_total_mass = 0
+fuel_to_carry_total_fuel = 0
+modulefuel_plus_fuel4fuel = 0
+
+#### get all modules from a file
+
+f = open('modules.txt', 'r')
+modules = f.read().splitlines()
+f.close()
+
+#### convert to integers
+modules = list(map(int, modules))
+
+
+# Go Get The Fuel for the modules
+for package in modules:
+    x= findFuel(package)
+    fuel_to_carry_total_mass = fuel_to_carry_total_mass + x
+    fuel4fuel = 0
+    
+    # now get added fule for fuel
+    total_extrafuel = getFuelToCarryFuelRec(x,fuel4fuel)
+    fuel_to_carry_total_fuel += total_extrafuel 
+
+
+# Your puzzle answer was 3388015. Correct!
+
+# Now Find fuel needed to carry fuel
+# At first, a module of mass 1969 requires 654 fuel.
+# Then, this fuel requires 216 more fuel (654 / 3 - 2).
+# 216 then requires 70 more fuel, which requires 21 fuel, which requires 5 fuel,
+# which requires no further fuel.
+# So, the total fuel required for a module of mass 1969 is 654 + 216 + 70 + 21 + 5 = 966.
+
+
+print("***** TOTALS ******")
+print("total fuel for mass:")
+print(fuel_to_carry_total_mass)
+print("total fuel: for fuel")
+print(fuel_to_carry_total_fuel)
+print (fuel_to_carry_total_mass+fuel_to_carry_total_fuel)
+
+# Your puzzle answer was 3,388,015. Correct!
+# Total fuel for fuel  1,691,125
+# total fuel: 5,079,140
+
+
